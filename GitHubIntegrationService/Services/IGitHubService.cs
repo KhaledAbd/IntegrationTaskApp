@@ -13,5 +13,8 @@ namespace GitHubIntegrationService.Services
 
         [OperationContract]
         List<GitHubCommit> GetScheduledCommits();
+
+        [OperationContract]
+        System.DateTime GetLastSyncTime();
     }
 }

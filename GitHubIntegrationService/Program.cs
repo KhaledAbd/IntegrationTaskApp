@@ -6,8 +6,30 @@ using GitHubIntegrationService.Services;
 using Quartz;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Serilog;
+using System;
+using System.IO;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Ensure Logs directory exists
+var logDirectory = Path.Combine(builder.Environment.ContentRootPath, "Logs");
+if (!Directory.Exists(logDirectory))
+{
+    Directory.CreateDirectory(logDirectory);
+}
+
+// Configure Serilog
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Information()
+    .WriteTo.Console()
+    .WriteTo.File(Path.Combine(logDirectory, "log-.txt"), rollingInterval: RollingInterval.Day)
+    .CreateLogger();
+
+builder.Host.UseSerilog();
+
+Log.Information("Starting GitHub Integration WCF Service...");
 
 // Add CoreWCF services to the container.
 builder.Services.AddServiceModelServices();
@@ -43,4 +65,17 @@ app.UseServiceModel(serviceBuilder =>
     serviceBuilder.AddServiceEndpoint<GitHubService, IGitHubService>(new BasicHttpBinding(), "/GitHubService.svc");
 });
 
-app.Run();
+Log.Information("Service is ready. Endpoints configured.");
+
+try
+{
+    app.Run();
+}
+catch (Exception ex)
+{
+    Log.Fatal(ex, "Service terminated unexpectedly.");
+}
+finally
+{
+    Log.CloseAndFlush();
+}

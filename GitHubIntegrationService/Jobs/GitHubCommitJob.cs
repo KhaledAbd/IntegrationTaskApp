@@ -35,30 +35,46 @@ namespace GitHubIntegrationService.Jobs
 
         public async Task Execute(IJobExecutionContext context)
         {
+            _logger.LogInformation("Scheduled Job 'GitHubCommitJob' started at {Time}", DateTime.UtcNow);
+
             try
             {
-                _logger.LogInformation("Refreshing GitHub commits cache...");
+                _logger.LogInformation("Job Refreshing GitHub commits cache for repository: {RepoUrl}", _repoUrl);
 
                 var request = new HttpRequestMessage(HttpMethod.Get, _repoUrl);
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token);
                 request.Headers.UserAgent.ParseAdd(_userAgent);
 
+                _logger.LogInformation("Job Sending request to GitHub API...");
                 var response = await _httpClient.SendAsync(request);
-                response.EnsureSuccessStatusCode();
+                
+                if (!response.IsSuccessStatusCode)
+                {
+                    _logger.LogError("Job GitHub API request failed with Status Code: {StatusCode}", response.StatusCode);
+                    return;
+                }
 
+                _logger.LogInformation("Job GitHub API request was successful.");
                 var content = await response.Content.ReadAsStringAsync();
                 var options = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                 var commits = JsonSerializer.Deserialize<List<GitHubCommit>>(content, options);
 
                 if (commits != null)
                 {
-                    _cache.UpdateCommits(commits.Take(10).ToList());
-                    _logger.LogInformation("Successfully updated commit cache with {Count} commits.", commits.Take(10).Count());
+                    var last10 = commits.Take(10).ToList();
+                    _logger.LogInformation("Job Updating local cache with {Count} latest commits.", last10.Count);
+                    _cache.UpdateCommits(last10);
                 }
+                else
+                {
+                    _logger.LogWarning("Job GitHub API returned no commits.");
+                }
+
+                _logger.LogInformation("Job 'GitHubCommitJob' completed successfully.");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error while updating GitHub commits cache.");
+                _logger.LogError(ex, "An error occurred during scheduled 'GitHubCommitJob' execution.");
             }
         }
     }

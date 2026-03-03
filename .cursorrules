@@ -1,0 +1,23 @@
+# Project Development Rules
+
+## General Principles
+- **Container-First**: Always consider how changes affect the Docker environment (`docker-compose.yml`, `Dockerfile`).
+- **Separation of Concerns**: Keep business logic in Services, data access in Repositories, and API logic in Controllers.
+- **Consistent Logging**: Use Serilog for all C# components, ensuring structured logging with context.
+
+## C# (.NET Core) Standards
+- Use **Asynchronous Programming** (`async`/`await`) for all I/O bound operations.
+- Dependency Injection: Register services in `Program.cs`. Use interface-based injection in constructors.
+- Error Handling: Use `ExceptionHandlingMiddleware` for API and `IncludeExceptionDetailInFaults` for WCF debugging (in development).
+- API Documentation: Ensure Nswag/Swagger is configured and updated when changing API endpoints.
+
+## Angular (Frontend) Standards
+- **Version**: Angular 21.0.0.
+- **UI Components**: Use Kendo UI for Angular (Grid, Buttons, Dialogs) for data-heavy views.
+- **API Integration**: Do not write manual HTTP calls for API interaction. Use the generated `ApiClient` (via Nswag).
+- **Styling**: Use Vanilla CSS or Kendo themes. Maintain responsive layouts.
+- **State Management**: Use RxJS for asynchronous data streams and state.
+
+## Workflow Integration
+- Use workflows in `.agent/workflows/` for common tasks like running the stack or updating the API client.
+- Always check the health of services before proceeding with frontend work.

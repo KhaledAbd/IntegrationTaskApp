@@ -23,6 +23,7 @@ builder.Services.AddOpenApiDocument(config =>
 });
 
 builder.Services.AddScoped<IGitHubIntegrationRepository, GitHubIntegrationRepository>();
+builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
@@ -38,6 +39,7 @@ app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHealthChecks("/health");
 
 try
 {

@@ -30,7 +30,8 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - API_BASE_URL=http://github-integration-api:8080
     depends_on:
-      - github-integration-api
+      github-integration-api:
+        condition: service_healthy
     restart: unless-stopped
     networks:
       - appnet
@@ -43,7 +44,7 @@ services:
     ports:
       - "4200:80"
     environment:
-      - API_URL=http://github-integration-api:8080
+      - API_URL=http://localhost:8080
     depends_on:
       github-integration-api:
         condition: service_healthy

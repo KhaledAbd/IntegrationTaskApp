@@ -41,6 +41,7 @@ builder.Services.AddSingleton<IServiceBehavior, ServiceDebugBehavior>(provider =
 builder.Services.AddHttpClient<IGitHubService, GitHubService>();
 builder.Services.AddTransient<GitHubService>();
 builder.Services.AddSingleton<CommitCache>();
+builder.Services.AddHealthChecks();
 
 // Configure Quartz.NET
 builder.Services.AddQuartz(q =>
@@ -66,6 +67,8 @@ app.UseServiceModel(serviceBuilder =>
     serviceBuilder.AddService<GitHubService>();
     serviceBuilder.AddServiceEndpoint<GitHubService, IGitHubService>(new BasicHttpBinding(), "/GitHubService.svc");
 });
+
+app.MapHealthChecks("/health");
 
 Log.Information("Service is ready. Endpoints configured.");
 

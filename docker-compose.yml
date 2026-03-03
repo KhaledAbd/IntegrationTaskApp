@@ -18,6 +18,9 @@ services:
       retries: 5
       start_period: 5s
     restart: unless-stopped
+    depends_on:
+      github-integration-service:
+        condition: service_healthy
     networks:
       - appnet
 
@@ -28,10 +31,12 @@ services:
     image: github-integration-service:dev
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - API_BASE_URL=http://github-integration-api:8080
-    depends_on:
-      github-integration-api:
-        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
     restart: unless-stopped
     networks:
       - appnet
@@ -53,6 +58,18 @@ services:
       - appnet
     volumes:
       - ./github-repository-monitor/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+
+  github-pusher:
+    build:
+      context: ./github-pusher
+      dockerfile: Dockerfile
+    environment:
+      - GITHUB_TOKEN=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
+      - REPO_OWNER=KhaledAbd
+      - REPO_NAME=IntegrationTaskApp
+    restart: unless-stopped
+    networks:
+      - appnet
 
 networks:
   appnet:

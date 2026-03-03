@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  github-integration-api:
+    build:
+      context: ./GitHubIntegrationApi
+      dockerfile: Dockerfile
+    image: github-integration-api:dev
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/health || curl -f http://localhost:8080/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    restart: unless-stopped
+    networks:
+      - appnet
+
+  github-integration-service:
+    build:
+      context: ./GitHubIntegrationService
+      dockerfile: Dockerfile
+    image: github-integration-service:dev
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - API_BASE_URL=http://github-integration-api:8080
+    depends_on:
+      - github-integration-api
+    restart: unless-stopped
+    networks:
+      - appnet
+
+  github-repository-monitor:
+    build:
+      context: ./github-repository-monitor
+      dockerfile: Dockerfile
+    image: github-repository-monitor:dev
+    ports:
+      - "4200:80"
+    environment:
+      - API_URL=http://github-integration-api:8080
+    depends_on:
+      github-integration-api:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - appnet
+    volumes:
+      - ./github-repository-monitor/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+
+networks:
+  appnet:
+    driver: bridge

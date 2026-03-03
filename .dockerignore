@@ -1,0 +1,11 @@
+bin/
+obj/
+out/
+.git/
+.vs/
+.vscode/
+*.user
+*.suo
+*.swp
+*.bak
+*.log

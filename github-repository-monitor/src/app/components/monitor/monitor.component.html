@@ -1,0 +1,104 @@
+<div class="monitor-container">
+  <header class="page-header">
+    <div class="title-section">
+      <h1>GitHub Repository Monitor</h1>
+      <p class="subtitle">Real-time and scheduled commit tracking</p>
+    </div>
+    <div class="actions">
+      <button
+        kendoButton
+        [themeColor]="'primary'"
+        (click)="fetchLiveCommits()"
+        [disabled]="loadingLive"
+      >
+        <lucide-icon [name]="RefreshIcon" [class.spin]="loadingLive"></lucide-icon>
+        Refresh Live Data
+      </button>
+    </div>
+  </header>
+
+  <main class="dashboard-grid">
+    <!-- Live Commits Section -->
+    <section class="monitor-section live-section">
+      <div class="section-header">
+        <lucide-icon [name]="ZapIcon" class="icon-live"></lucide-icon>
+        <h2>Live Commits</h2>
+        <span class="badge badge-live">Real-time</span>
+      </div>
+
+      <kendo-grid [data]="liveCommits" [loading]="loadingLive" [height]="400" class="premium-grid">
+        <kendo-grid-column field="message" title="Commit Message"></kendo-grid-column>
+        <kendo-grid-column field="authorName" title="Author" [width]="150"></kendo-grid-column>
+        <kendo-grid-column field="date" title="Date" [width]="180">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            {{ dataItem.date | date: 'MMM d, y, h:mm a' }}
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="sha" title="Commit SHA" [width]="120">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <code class="sha">{{ dataItem.sha?.substring(0, 7) }}</code>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="source" title="Source" [width]="100">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span class="source-tag live">{{ dataItem.source }}</span>
+          </ng-template>
+        </kendo-grid-column>
+      </kendo-grid>
+    </section>
+
+    <!-- Scheduled Commits Section -->
+    <section class="monitor-section scheduled-section">
+      <div class="section-header">
+        <lucide-icon [name]="HistoryIcon" class="icon-scheduled"></lucide-icon>
+        <h2>Scheduled Commits</h2>
+        <div class="sync-info">
+          Last Sync:
+          <strong>{{ lastSyncTime ? (lastSyncTime | date: 'MMM d, h:mm:ss a') : 'Never' }}</strong>
+        </div>
+      </div>
+
+      <kendo-grid
+        [data]="scheduledCommits"
+        [loading]="loadingScheduled"
+        [height]="400"
+        class="premium-grid"
+      >
+        <kendo-grid-column field="message" title="Commit Message"></kendo-grid-column>
+        <kendo-grid-column field="authorName" title="Author" [width]="150"></kendo-grid-column>
+        <kendo-grid-column field="date" title="Date" [width]="180">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            {{ dataItem.date | date: 'MMM d, y, h:mm a' }}
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="sha" title="Commit SHA" [width]="120">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <code class="sha">{{ dataItem.sha?.substring(0, 7) }}</code>
+          </ng-template>
+        </kendo-grid-column>
+        <kendo-grid-column field="source" title="Source" [width]="100">
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <span class="source-tag scheduled">{{ dataItem.source }}</span>
+          </ng-template>
+        </kendo-grid-column>
+      </kendo-grid>
+    </section>
+  </main>
+
+  <!-- Error Dialog -->
+  <kendo-dialog
+    title="System Error"
+    *ngIf="errorDialogOpened"
+    (close)="closeErrorDialog()"
+    [minWidth]="250"
+    [width]="450"
+  >
+    <div class="error-dialog-content">
+      <lucide-icon [name]="AlertIcon" class="error-icon"></lucide-icon>
+      <p>{{ errorMessage }}</p>
+    </div>
+    <kendo-dialog-actions>
+      <button kendoButton (click)="closeErrorDialog()" [themeColor]="'error'">Close</button>
+    </kendo-dialog-actions>
+  </kendo-dialog>
+</div>

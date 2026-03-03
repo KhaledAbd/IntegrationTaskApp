@@ -1,0 +1,12 @@
+bin/
+obj/
+out/
+.git/
+.vs/
+.vscode/
+*.user
+*.suo
+*.sln
+*.swp
+*.bak
+*.log

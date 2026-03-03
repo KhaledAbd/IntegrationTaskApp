@@ -1,0 +1,17 @@
+services:
+  github-integration-api:
+    build:
+      context: ./GitHubIntegrationApi
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+
+  github-integration-service:
+    build:
+      context: ./GitHubIntegrationService
+      dockerfile: Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development

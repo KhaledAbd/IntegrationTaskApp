@@ -35,9 +35,11 @@ Log.Information("Starting GitHub Integration WCF Service...");
 builder.Services.AddServiceModelServices();
 builder.Services.AddServiceModelMetadata();
 builder.Services.AddSingleton<IServiceBehavior, ServiceMetadataBehavior>(provider => new ServiceMetadataBehavior { HttpGetEnabled = true });
+builder.Services.AddSingleton<IServiceBehavior, ServiceDebugBehavior>(provider => new ServiceDebugBehavior { IncludeExceptionDetailInFaults = true });
 
 // Add application services
 builder.Services.AddHttpClient<IGitHubService, GitHubService>();
+builder.Services.AddTransient<GitHubService>();
 builder.Services.AddSingleton<CommitCache>();
 
 // Configure Quartz.NET

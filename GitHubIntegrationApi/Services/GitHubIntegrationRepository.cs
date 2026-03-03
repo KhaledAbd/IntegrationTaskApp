@@ -17,7 +17,7 @@ namespace GitHubIntegrationApi.Services
 
         public GitHubIntegrationRepository(IConfiguration configuration, ILogger<GitHubIntegrationRepository> logger)
         {
-            _wcfServiceUrl = configuration["WcfServiceUrl"] ?? "http://localhost:5000/GitHubService.svc";
+            _wcfServiceUrl = configuration["WcfServiceUrl"] ?? "http://github-integration-service:8080/GitHubService.svc";
             _logger = logger;
         }
 

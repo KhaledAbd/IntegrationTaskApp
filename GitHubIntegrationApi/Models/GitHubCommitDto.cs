@@ -8,5 +8,6 @@ namespace GitHubIntegrationApi.Models
         public DateTime Date { get; set; }
         public string? Message { get; set; }
         public string? HtmlUrl { get; set; }
+        public string? Source { get; set; }
     }
 }

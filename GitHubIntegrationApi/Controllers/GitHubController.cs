@@ -26,11 +26,11 @@ namespace GitHubIntegrationApi.Controllers
         }
 
         [HttpGet("scheduled")]
-        public async Task<ActionResult<ApiResponse<List<GitHubCommitDto>>>> GetScheduled()
+        public async Task<ActionResult<ApiResponse<ScheduledCommitsDto>>> GetScheduled()
         {
             _logger.LogInformation("GET /api/github/scheduled requested.");
-            var commits = await _repository.GetScheduledCommitsAsync();
-            return Ok(ApiResponse<List<GitHubCommitDto>>.Ok(commits, "Successfully retrieved scheduled commits from cache."));
+            var result = await _repository.GetScheduledCommitsAsync();
+            return Ok(ApiResponse<ScheduledCommitsDto>.Ok(result, "Successfully retrieved scheduled commits from cache."));
         }
     }
 }

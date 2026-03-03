@@ -7,7 +7,7 @@ namespace GitHubIntegrationApi.Services
     public interface IGitHubIntegrationRepository
     {
         Task<List<GitHubCommitDto>> GetLiveCommitsAsync();
-        Task<List<GitHubCommitDto>> GetScheduledCommitsAsync();
+        Task<ScheduledCommitsDto> GetScheduledCommitsAsync();
     }
 
     public class GitHubIntegrationRepository : IGitHubIntegrationRepository
@@ -36,7 +36,7 @@ namespace GitHubIntegrationApi.Services
             try
             {
                 var commits = await channel.GetLiveCommits();
-                return MapCommits(commits);
+                return MapCommits(commits, "Live");
             }
             finally
             {
@@ -44,15 +44,22 @@ namespace GitHubIntegrationApi.Services
             }
         }
 
-        public async Task<List<GitHubCommitDto>> GetScheduledCommitsAsync()
+        public async Task<ScheduledCommitsDto> GetScheduledCommitsAsync()
         {
-            _logger.LogInformation("Calling WCF GetScheduledCommits...");
+            _logger.LogInformation("Calling WCF GetScheduledCommits and GetLastSyncTime...");
             var channel = CreateChannel();
             try
             {
-                // WCF method is synchronous in interface definition (List<GitHubCommit> GetScheduledCommits())
-                var commits = await Task.Run(() => channel.GetScheduledCommits());
-                return MapCommits(commits);
+                var commitsTask = Task.Run(() => channel.GetScheduledCommits());
+                var syncTimeTask = Task.Run(() => channel.GetLastSyncTime());
+                
+                await Task.WhenAll(commitsTask, syncTimeTask);
+                
+                return new ScheduledCommitsDto
+                {
+                    Commits = MapCommits(await commitsTask, "Scheduled"),
+                    LastSyncTime = await syncTimeTask
+                };
             }
             finally
             {
@@ -60,7 +67,7 @@ namespace GitHubIntegrationApi.Services
             }
         }
 
-        private List<GitHubCommitDto> MapCommits(List<GitHubWcfCommit> wcfCommits)
+        private List<GitHubCommitDto> MapCommits(List<GitHubWcfCommit> wcfCommits, string source)
         {
             if (wcfCommits == null) return new List<GitHubCommitDto>();
 
@@ -71,7 +78,8 @@ namespace GitHubIntegrationApi.Services
                 AuthorEmail = c.Commit?.Author?.Email,
                 Date = c.Commit?.Author?.Date ?? DateTime.MinValue,
                 Message = c.Commit?.Message,
-                HtmlUrl = c.HtmlUrl
+                HtmlUrl = c.HtmlUrl,
+                Source = source
             }).ToList();
         }
     }

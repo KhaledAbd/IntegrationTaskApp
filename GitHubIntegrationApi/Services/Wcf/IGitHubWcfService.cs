@@ -3,6 +3,7 @@ using System.Runtime.Serialization;
 
 namespace GitHubIntegrationApi.Services.Wcf
 {
+    // use tempuri.org for namespace => Debugging.
     [ServiceContract(Namespace = "http://tempuri.org/")]
     public interface IGitHubService
     {
@@ -16,7 +17,7 @@ namespace GitHubIntegrationApi.Services.Wcf
         DateTime GetLastSyncTime();
     }
 
-    [DataContract(Name = "GitHubCommit", Namespace = "http://schemas.datacontract.org/2004/07/GitHubIntegrationService.Models")]
+    [DataContract(Name = "GitHubCommit", Namespace = "http://schemas.datacontract.org/2026/03/GitHubIntegrationService.Models")]
     public class GitHubWcfCommit
     {
         [DataMember]
@@ -29,7 +30,7 @@ namespace GitHubIntegrationApi.Services.Wcf
         public string? HtmlUrl { get; set; }
     }
 
-    [DataContract(Name = "CommitInfo", Namespace = "http://schemas.datacontract.org/2004/07/GitHubIntegrationService.Models")]
+    [DataContract(Name = "CommitInfo", Namespace = "http://schemas.datacontract.org/2026/03/GitHubIntegrationService.Models")]
     public class WcfCommitInfo
     {
         [DataMember]
@@ -39,7 +40,7 @@ namespace GitHubIntegrationApi.Services.Wcf
         public string? Message { get; set; }
     }
 
-    [DataContract(Name = "AuthorInfo", Namespace = "http://schemas.datacontract.org/2004/07/GitHubIntegrationService.Models")]
+    [DataContract(Name = "AuthorInfo", Namespace = "http://schemas.datacontract.org/2026/03/GitHubIntegrationService.Models")]
     public class WcfAuthorInfo
     {
         [DataMember]

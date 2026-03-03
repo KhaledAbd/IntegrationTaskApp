@@ -6,7 +6,6 @@ out/
 .vscode/
 *.user
 *.suo
-*.sln
 *.swp
 *.bak
 *.log

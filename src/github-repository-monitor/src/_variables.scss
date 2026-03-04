@@ -1,0 +1,55 @@
+/* System Design Variables */
+$primary: #818cf8;
+$primary-hover: #6366f1;
+$secondary: #38bdf8;
+$accent: #f472b6;
+$success: #34d399;
+$error: #fb7185;
+$background: #090e17; /* Very deep blue-black */
+$surface: rgba(17, 24, 39, 0.65); /* Darker glass surface */
+$surface-hover: rgba(17, 24, 39, 0.85);
+$text: #f8fafc;
+$text-muted: #94a3b8;
+$border: rgba(255, 255, 255, 0.08);
+$glass-bg: rgba(255, 255, 255, 0.02);
+$glass-border: rgba(255, 255, 255, 0.06);
+
+$grad-primary: linear-gradient(135deg, #6366f1 0%, #ec4899 100%);
+$grad-surface: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 100%);
+
+$shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+$shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+$shadow-lg: 0 10px 30px -5px rgba(0, 0, 0, 0.5), 0 4px 10px -5px rgba(0, 0, 0, 0.3); /* Stronger dark shadow */
+$shadow-glow: 0 0 15px rgba(99, 102, 241, 0.3);
+$radius: 1rem;
+$blur: 16px; /* Stronger blur for better glass effect */
+$transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+// Export to CSS variables for runtime usage
+:root {
+  --primary: #{$primary};
+  --primary-hover: #{$primary-hover};
+  --secondary: #{$secondary};
+  --accent: #{$accent};
+  --success: #{$success};
+  --error: #{$error};
+  --background: #{$background};
+  --surface: #{$surface};
+  --surface-hover: #{$surface-hover};
+  --text: #{$text};
+  --text-muted: #{$text-muted};
+  --border: #{$border};
+  --glass-bg: #{$glass-bg};
+  --glass-border: #{$glass-border};
+  
+  --grad-primary: #{$grad-primary};
+  --grad-surface: #{$grad-surface};
+
+  --shadow-sm: #{$shadow-sm};
+  --shadow: #{$shadow-md};
+  --shadow-lg: #{$shadow-lg};
+  --shadow-glow: #{$shadow-glow};
+  --radius: #{$radius};
+  --blur: #{$blur};
+  --transition: #{$transition};
+}

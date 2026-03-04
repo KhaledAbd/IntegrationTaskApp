@@ -1,7 +1,6 @@
 import { Component, OnInit, inject, ViewChild, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
-import { debounceTime, distinctUntilChanged, Subject, takeUntil } from 'rxjs';
+import { Subject } from 'rxjs';
 import { GitHubClient } from '../../../../services/api-client';
 import { 
   GridModule, 
@@ -13,9 +12,12 @@ import {
 } from '@progress/kendo-angular-grid';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { InputsModule } from '@progress/kendo-angular-inputs';
+import { KENDO_DATEINPUTS } from '@progress/kendo-angular-dateinputs';
 import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
+import { DateRangeFilterCellComponent } from '../date-range-filter-cell/date-range-filter-cell.component';
 import { IconsModule } from '@progress/kendo-angular-icons';
 import { LucideAngularModule, RefreshCw, Zap, Filter } from 'lucide-angular';
+import { CompositeFilterDescriptor, FilterDescriptor } from '@progress/kendo-data-query';
 import { 
   SVGIcon, 
   searchIcon, 
@@ -34,10 +36,10 @@ import {
     ExcelModule,
     ButtonsModule,
     InputsModule,
-    DateInputsModule,
+    KENDO_DATEINPUTS,
+    DateRangeFilterCellComponent,
     IconsModule,
-    LucideAngularModule,
-    ReactiveFormsModule
+    LucideAngularModule
   ],
   templateUrl: './live-table.component.html',
   styleUrl: './live-table.component.css'
@@ -56,11 +58,7 @@ export class LiveTableComponent implements OnInit, OnDestroy {
   public pdfSVG: SVGIcon = filePdfIcon;
   public refreshSVG: SVGIcon = refreshIcon;
 
-  filterForm = new FormGroup({
-    searchText: new FormControl(''),
-    startDate: new FormControl<Date | null>(null),
-    endDate: new FormControl<Date | null>(null)
-  });
+  public filterState: CompositeFilterDescriptor = { logic: 'and', filters: [] };
 
   skip = 0;
   pageSize = 10;
@@ -69,16 +67,6 @@ export class LiveTableComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.fetchLiveCommits();
-
-    this.filterForm.valueChanges
-      .pipe(
-        debounceTime(400),
-        distinctUntilChanged((prev, curr) => JSON.stringify(prev) === JSON.stringify(curr)),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(() => {
-        this.refresh();
-      });
   }
 
   ngOnDestroy(): void {
@@ -89,12 +77,35 @@ export class LiveTableComponent implements OnInit, OnDestroy {
   fetchLiveCommits(): void {
     this.loading = true;
     const page = Math.floor(this.skip / this.pageSize) + 1;
-    const { searchText, startDate, endDate } = this.filterForm.value;
+    
+    // Extract filter values from Grid Filter State
+    let searchTexts: string[] = [];
+    let start: Date | null = null;
+    let end: Date | null = null;
+
+    if (this.filterState && this.filterState.filters) {
+      this.filterState.filters.forEach(filter => {
+        if ('logic' in filter) {
+            // It's a CompositeFilterDescriptor (e.g. from our Date Range filter cell)
+            filter.filters.forEach(f => {
+               if ('operator' in f && 'value' in f) {
+                 if (f.operator === 'gte') start = f.value;
+                 if (f.operator === 'lte') end = f.value;
+               }
+            });
+        } else if ('field' in filter && 'value' in filter && filter.value) {
+            // It's a single FilterDescriptor (e.g. from Author, Message, SHA inputs)
+            searchTexts.push(filter.value);
+        }
+      });
+    }
+
+    const searchText = searchTexts.length > 0 ? searchTexts.join(' ') : null;
     
     this.githubClient.getLive(
-        searchText || null, 
-        startDate || null, 
-        endDate || null, 
+        searchText, 
+        start, 
+        end, 
         page, 
         this.pageSize
     ).subscribe({
@@ -127,5 +138,10 @@ export class LiveTableComponent implements OnInit, OnDestroy {
       this.dataBinding.skip = 0;
     }
     this.fetchLiveCommits();
+  }
+
+  onFilterChange(filter: CompositeFilterDescriptor): void {
+    this.filterState = filter;
+    this.refresh();
   }
 }

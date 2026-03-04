@@ -13,50 +13,18 @@
   <kendo-grid 
     [data]="gridView" 
     [loading]="loading" 
-    [height]="500"
-    [pageable]="true"
-    [pageSize]="pageSize"
-    [skip]="skip"
-    (pageChange)="onPageChange($event)"
+    scrollable="none"
     class="premium-grid"
     [navigable]="true"
+    filterable="row"
+    [filter]="filterState"
+    (filterChange)="onFilterChange($event)"
   >
     <ng-template kendoGridToolbarTemplate>
-      <div class="toolbar-content" [formGroup]="filterForm">
-        <kendo-textbox
-          [style.width.px]="250"
-          placeholder="Search in all columns..."
-          rounded="full"
-          formControlName="searchText"
-          (valueChange)="refresh()"
-        >
-          <ng-template kendoTextBoxPrefixTemplate>
-            <kendo-svgicon [icon]="searchSVG"></kendo-svgicon>
-          </ng-template>
-        </kendo-textbox>
-        
-        <div class="filter-group date-filter-inline">
-          <kendo-daterange>
-            <kendo-dateinput
-              kendoDateRangeStartInput
-              formControlName="startDate"
-              placeholder="Start"
-              class="responsive-date"
-              [style.width.px]="120"
-            ></kendo-dateinput>
-            <kendo-dateinput
-              kendoDateRangeEndInput
-              formControlName="endDate"
-              placeholder="End"
-              class="responsive-date"
-              [style.width.px]="120"
-            ></kendo-dateinput>
-          </kendo-daterange>
-        </div>
-
+      <div class="toolbar-content">
         <kendo-grid-spacer></kendo-grid-spacer>
         
-        <button kendoButton [themeColor]="'secondary'" (click)="refresh()" [disabled]="loading" fillMode="flat">
+        <button kendoButton [themeColor]="'secondary'" (click)="refresh()" [disabled]="loading" fillMode="flat" type="button">
           <kendo-svgicon [icon]="refreshSVG" [class.spin]="loading"></kendo-svgicon>
         </button>
         
@@ -69,7 +37,7 @@
       </div>
     </ng-template>
 
-    <kendo-grid-column field="message" title="Commit Message">
+    <kendo-grid-column field="message" title="Commit Message" [filterable]="false">
       <ng-template kendoGridCellTemplate let-dataItem>
         <div class="commit-msg-cell">
           <span class="message-text">{{ dataItem.message }}</span>
@@ -77,7 +45,16 @@
       </ng-template>
     </kendo-grid-column>
 
-    <kendo-grid-column field="authorName" title="Author" [width]="180">
+    <kendo-grid-column field="authorName" title="Name / Email" [width]="200">
+      <ng-template kendoGridFilterCellTemplate let-filter let-column="column">
+        <kendo-grid-string-filter-cell
+          [column]="column"
+          [filter]="filter"
+          operator="contains"
+          [showOperators]="false"
+        >
+        </kendo-grid-string-filter-cell>
+      </ng-template>
       <ng-template kendoGridCellTemplate let-dataItem>
         <div class="author-cell">
           <span class="author-name">{{ dataItem.authorName }}</span>
@@ -86,12 +63,18 @@
     </kendo-grid-column>
     
     <kendo-grid-column field="date" title="Date" [width]="200">
+      <ng-template kendoGridFilterCellTemplate let-filter>
+        <app-date-range-filter-cell
+          [filter]="filter"
+          field="date"
+        ></app-date-range-filter-cell>
+      </ng-template>
       <ng-template kendoGridCellTemplate let-dataItem>
         <span class="date-text">{{ dataItem.date | date: 'MMM d, y, h:mm a' }}</span>
       </ng-template>
     </kendo-grid-column>
     
-    <kendo-grid-column field="sha" title="SHA" [width]="120">
+    <kendo-grid-column field="sha" title="SHA" [width]="120" [filterable]="false">
       <ng-template kendoGridCellTemplate let-dataItem>
         <code class="sha">{{ dataItem.sha?.substring(0, 7) }}</code>
       </ng-template>

@@ -28,7 +28,7 @@
               {
                 "input": "node_modules/@progress/kendo-theme-default/dist/all.css"
               },
-              "src/styles.css"
+              "src/styles.scss"
             ],
             "polyfills": [
               "zone.js",
@@ -84,7 +84,7 @@
               {
                 "input": "node_modules/@progress/kendo-theme-default/dist/all.css"
               },
-              "src/styles.css"
+              "src/styles.scss"
             ]
           }
         }

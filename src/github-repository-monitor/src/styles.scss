@@ -1,0 +1,415 @@
+@use 'variables' as *;
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--background);
+  color: var(--text);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: var(--primary-hover);
+}
+
+/* Kendo UI Premium Overrides */
+.k-grid {
+  background-color: var(--surface) !important;
+  backdrop-filter: blur(var(--blur)) !important;
+  -webkit-backdrop-filter: blur(var(--blur)) !important;
+  border-radius: var(--radius) !important;
+  border: 1px solid var(--glass-border) !important;
+  color: var(--text) !important;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+.k-grid-toolbar {
+  background: transparent !important;
+  border-bottom: 1px solid var(--glass-border) !important;
+  padding: 1rem !important;
+  color: var(--text) !important;
+}
+
+.k-grid-header {
+  background: var(--glass-bg) !important;
+  border-bottom: 1px solid var(--glass-border) !important;
+}
+
+.k-grid-header .k-header {
+  background: transparent !important;
+  color: var(--text-muted) !important;
+  font-weight: 600 !important;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  padding: 1rem !important;
+  border-color: var(--glass-border) !important;
+}
+
+.k-grid td {
+  padding: 1rem !important;
+  border-color: var(--glass-border) !important;
+  color: var(--text) !important;
+  transition: background-color 0.2s ease;
+}
+
+.k-grid tr.k-alt {
+  background-color: rgba(255, 255, 255, 0.02) !important;
+}
+
+.k-grid tr:hover {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.k-grid-pager {
+  background: transparent !important;
+  border-top: 1px solid var(--glass-border) !important;
+  color: var(--text) !important;
+  padding: 0.75rem !important;
+}
+
+.k-pager-numbers .k-link.k-selected {
+  background: var(--grad-primary) !important;
+  border: none !important;
+  border-radius: 0.5rem !important;
+  color: white !important;
+  box-shadow: var(--shadow-glow) !important;
+}
+
+.k-pager-nav.k-link {
+  color: var(--text-muted) !important;
+}
+
+.k-pager-nav.k-link:hover {
+  color: var(--text) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-radius: 0.5rem;
+}
+
+/* Premium Buttons */
+.k-button-solid-primary {
+  background: var(--grad-primary) !important;
+  border: none !important;
+  border-radius: 0.75rem !important;
+  padding: 0.6rem 1.25rem !important;
+  font-weight: 600 !important;
+  color: white !important;
+  transition: var(--transition) !important;
+  box-shadow: var(--shadow-glow) !important;
+}
+
+.k-button-solid-primary:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.15);
+  box-shadow: 0 8px 25px rgba(236, 72, 153, 0.5) !important; /* pinkish stronger glow */
+}
+
+.k-button-solid-base {
+  background: var(--surface) !important;
+  border: 1px solid var(--glass-border) !important;
+  color: var(--text) !important;
+  border-radius: 0.75rem !important;
+  backdrop-filter: blur(var(--blur));
+  transition: var(--transition) !important;
+}
+
+.k-button-solid-base:hover {
+  background: var(--surface-hover) !important;
+  border-color: var(--primary) !important;
+  transform: translateY(-1px);
+}
+
+.k-button-solid-secondary {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid var(--glass-border) !important;
+  color: var(--text) !important;
+  border-radius: 0.75rem !important;
+  transition: var(--transition) !important;
+}
+
+.k-button-solid-secondary:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: var(--primary) !important;
+}
+
+
+/* Kendo Inputs */
+.k-textbox, .k-input-inner {
+  background: transparent !important;
+  color: var(--text) !important;
+}
+
+.k-input-md {
+  background: rgba(0, 0, 0, 0.2) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 0.75rem !important;
+  transition: var(--transition) !important;
+  color: var(--text) !important;
+}
+
+.k-input-md:focus-within, .k-input-md:focus {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3) !important;
+  background: rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Base button fallbacks (like export buttons) */
+.k-button-outline {
+  color: var(--text) !important;
+  border-color: var(--glass-border) !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+  border-radius: 0.5rem !important;
+  transition: var(--transition) !important;
+}
+
+.k-button-outline:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: var(--primary) !important;
+  color: var(--text) !important;
+}
+
+/* --- Monitor Component Extracted Styles --- */
+.monitor-container {
+  padding: 1.5rem;
+  max-width: 1600px;
+  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+@media (min-width: 768px) {
+  .monitor-container {
+    padding: 3rem;
+  }
+}
+
+.page-header {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .page-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.title-section h1 {
+  margin: 0;
+  font-size: 2.5rem;
+  font-weight: 900;
+  background: var(--grad-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1.1;
+}
+
+.subtitle {
+  margin: 0.5rem 0 0;
+  color: var(--text-muted);
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+}
+
+@media (min-width: 1200px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr; /* Stay 1 column for tables to have full width */
+  }
+}
+
+.error-dialog-content {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1.5rem 0;
+}
+
+.error-icon {
+  color: var(--error);
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+/* Monitor Kendo Dialog & Components Overrides */
+.k-dialog-wrapper .k-dialog {
+  border-radius: var(--radius);
+  background: var(--surface);
+  backdrop-filter: blur(var(--blur));
+  -webkit-backdrop-filter: blur(var(--blur));
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-lg);
+  color: var(--text);
+}
+
+.k-dialog-titlebar {
+  background: transparent !important;
+  color: var(--text) !important;
+  border-bottom: 1px solid var(--glass-border);
+  padding: 1rem 1.5rem !important;
+}
+
+.k-dateinput {
+  background: var(--glass-bg) !important;
+  border-radius: 0.75rem !important;
+  border-color: var(--glass-border) !important;
+}
+
+/* Monitor App Specific Component Classes */
+
+.monitor-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.section-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.section-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+
+.icon-live {
+  color: var(--secondary);
+  width: 2rem;
+  height: 2rem;
+  filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.4));
+  animation: pulse-icon 2s infinite;
+}
+
+.icon-scheduled {
+  color: var(--primary);
+  width: 2rem;
+  height: 2rem;
+}
+
+@keyframes pulse-icon {
+  0% { transform: scale(1); opacity: 1; filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.4)); }
+  50% { transform: scale(1.1); opacity: 0.8; filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.8)); }
+  100% { transform: scale(1); opacity: 1; filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.4)); }
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.badge-live {
+  background: rgba(56, 189, 248, 0.15);
+  color: var(--secondary);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+}
+
+.sync-info {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+  background: var(--glass-bg);
+  padding: 0.4rem 1rem;
+  border-radius: 9999px;
+  border: 1px solid var(--glass-border);
+}
+
+.sync-info strong {
+  color: var(--text);
+  margin-left: 0.5rem;
+}
+
+.toolbar-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+/* Table Cells Overrides */
+.commit-msg-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.message-text {
+  font-weight: 500;
+  color: var(--text);
+}
+
+.author-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.author-name {
+  font-weight: 600;
+}
+
+.date-text {
+  color: var(--text-muted);
+  font-family: inherit;
+}
+
+.sha {
+  background: var(--glass-bg);
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.25rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+  border: 1px solid var(--glass-border);
+}
+
+.premium-grid {
+  height: 100%;
+}

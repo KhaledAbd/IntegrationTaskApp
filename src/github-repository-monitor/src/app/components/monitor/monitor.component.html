@@ -1,0 +1,30 @@
+<div class="monitor-container">
+  <header class="page-header">
+    <div class="title-section">
+      <h1>GitHub Repository Monitor</h1>
+      <p class="subtitle">Real-time and scheduled commit tracking</p>
+    </div>
+  </header>
+
+  <main class="dashboard-grid">
+    <app-live-table></app-live-table>
+    <app-scheduled-table></app-scheduled-table>
+  </main>
+
+  <!-- Error Dialog -->
+  <kendo-dialog
+    title="System Error"
+    *ngIf="errorDialogOpened"
+    (close)="closeErrorDialog()"
+    [minWidth]="250"
+    [width]="450"
+  >
+    <div class="error-dialog-content">
+      <lucide-icon [name]="AlertIcon" class="error-icon"></lucide-icon>
+      <p>{{ errorMessage }}</p>
+    </div>
+    <kendo-dialog-actions>
+      <button kendoButton (click)="closeErrorDialog()" [themeColor]="'error'">Close</button>
+    </kendo-dialog-actions>
+  </kendo-dialog>
+</div>

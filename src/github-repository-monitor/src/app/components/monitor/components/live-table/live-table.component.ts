@@ -2,25 +2,26 @@ import { Component, OnInit, inject, ViewChild, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subject } from 'rxjs';
 import { GitHubClient } from '../../../../services/api-client';
-import { 
-  GridModule, 
-  PageChangeEvent, 
-  GridDataResult, 
+import {
+  GridModule,
+  PageChangeEvent,
+  GridDataResult,
   DataBindingDirective,
   PDFModule,
-  ExcelModule
+  ExcelModule,
+  PagerSettings,
 } from '@progress/kendo-angular-grid';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { KENDO_DATEINPUTS } from '@progress/kendo-angular-dateinputs';
 import { IconsModule } from '@progress/kendo-angular-icons';
 import { LucideAngularModule, RefreshCw, Zap, Filter } from 'lucide-angular';
-import { 
-  SVGIcon, 
-  searchIcon, 
-  fileExcelIcon, 
+import {
+  SVGIcon,
+  searchIcon,
+  fileExcelIcon,
   filePdfIcon,
-  redoIcon as refreshIcon
+  redoIcon as refreshIcon,
 } from '@progress/kendo-svg-icons';
 
 @Component({
@@ -35,10 +36,10 @@ import {
     InputsModule,
     KENDO_DATEINPUTS,
     IconsModule,
-    LucideAngularModule
+    LucideAngularModule,
   ],
   templateUrl: './live-table.component.html',
-  styleUrl: './live-table.component.css'
+  styleUrl: './live-table.component.css',
 })
 export class LiveTableComponent implements OnInit, OnDestroy {
   @ViewChild(DataBindingDirective) dataBinding?: DataBindingDirective;
@@ -59,6 +60,14 @@ export class LiveTableComponent implements OnInit, OnDestroy {
   allCommits: any[] = [];
   gridView: GridDataResult = { data: [], total: 0 };
   loading = false;
+
+  public pagerSettings: PagerSettings = {
+    buttonCount: 5,
+    info: true,
+    type: 'numeric',
+    pageSizes: [5, 10, 20, 50],
+    previousNext: true,
+  };
 
   ngOnInit(): void {
     this.fetchLiveCommits();
@@ -82,14 +91,14 @@ export class LiveTableComponent implements OnInit, OnDestroy {
       error: (err) => {
         this.loading = false;
         console.error('Failed to fetch live commits', err);
-      }
+      },
     });
   }
 
   updateGridView(): void {
     this.gridView = {
       data: this.allCommits.slice(this.skip, this.skip + this.pageSize),
-      total: this.allCommits.length
+      total: this.allCommits.length,
     };
   }
 

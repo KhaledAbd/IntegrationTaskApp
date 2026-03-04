@@ -28,12 +28,12 @@ The application consists of multiple cohesive components orchestrated via Docker
 
 ## Authentication with GitHub
 
-Authentication with the GitHub API is handled using a **Personal Access Token (PAT)**. 
+Authentication with the GitHub API is handled using a **Personal Access Token (PAT)**.
 
 - The `GitHubIntegrationService` requires a GitHub token to authenticate its requests to the GitHub API. This is configured in the `src/GitHubIntegrationService/appsettings.json` file under the `"GitHub:Token"` key or via environment variables.
-- The `github-pusher` service also requires a GitHub token, which is passed as the `GITHUB_TOKEN` environment variable in the `docker-compose.yml` file.
+- The `github-pusher` service also requires a GitHub token, which is passed via a global `.env` file located in the project root.
 
-**Note on Security:** In a production environment, hardcoding tokens in `appsettings.json` or `docker-compose.yml` is not recommended. Instead, you should use secure secret management solutions like Azure Key Vault, AWS Secrets Manager, or Docker Secrets.
+**Note on Security:** In a production environment, you should use secure secret management solutions like Azure Key Vault, AWS Secrets Manager, or Docker Secrets. For local development, using a `.env` file (which should be excluded from version control) is preferred over hardcoding tokens in `docker-compose.yml`.
 
 ## Prerequisites
 
@@ -49,20 +49,32 @@ Authentication with the GitHub API is handled using a **Personal Access Token (P
 The easiest way to get the entire stack running is via Docker Compose. This ensures all services, dependencies, and network configurations are set up automatically.
 
 1. Clone the repository and navigate to the project root directory.
-2. Build and start all services using Docker Compose:
+2. Create a `.env` file in the root directory and add your GitHub configuration:
+
+   ```env
+   GITHUB_TOKEN=your_github_token
+   REPO_OWNER=your_github_username
+   REPO_NAME=your_repository_name
+   ```
+
+3. Build and start all services using Docker Compose:
+
    ```bash
    docker-compose up -d --build
    ```
-3. Once the containers are healthy:
+
+4. Once the containers are healthy:
    - Access the Angular UI at: [http://localhost:4200](http://localhost:4200)
    - Access the API at: [http://localhost:8080](http://localhost:8080)
 
 To view the logs of the services, run:
+
 ```bash
 docker-compose logs -f
 ```
 
 To stop the services, run:
+
 ```bash
 docker-compose down
 ```
@@ -81,23 +93,27 @@ If you prefer to run and debug the services locally using Visual Studio:
 If you want to run the services individually without Docker or Visual Studio:
 
 **1. Run GitHubIntegrationService:**
+
 ```bash
 cd src/GitHubIntegrationService
 dotnet run
 ```
 
 **2. Run GitHubIntegrationApi:**
+
 ```bash
 cd src/GitHubIntegrationApi
 dotnet run
 ```
 
 **3. Run Angular Frontend:**
+
 ```bash
 cd src/github-repository-monitor
 npm install
 npm start
 ```
+
 The frontend will be available at `http://localhost:4200`.
 
 ## Assumptions & Notes

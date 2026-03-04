@@ -46,7 +46,7 @@ namespace GitHubIntegrationService.Services
                 };
 
                 var lastTime = _cache.GetLastSyncTime();
-                queryParams.Add($"since={lastTime:yyyy-MM-ddTHH:mm:ssZ}");
+                queryParams.Add($"since={lastTime.ToUniversalTime():yyyy-MM-ddTHH:mm:ssZ}");
                 
                 var url = $"{_repoUrl}?{string.Join("&", queryParams)}";
                 

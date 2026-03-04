@@ -2,9 +2,10 @@
 
 # This stage is used when running from VS in fast mode (Default for Debug configuration)
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+ARG APP_UID=1000
 RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
-RUN mkdir -p /app_data/Logs /app_data/Cache && chown -R $APP_UID:$APP_UID /app_data
+RUN mkdir -p /app_data/Logs /app_data/Cache && chown -R ${APP_UID}:${APP_UID} /app_data
 EXPOSE 8080
 EXPOSE 8081
 
@@ -26,7 +27,8 @@ RUN dotnet publish "./GitHubIntegrationService.csproj" -c $BUILD_CONFIGURATION -
 
 # This stage is used in production or when running from VS in regular mode (Default when not using the Debug configuration)
 FROM base AS final
+ARG APP_UID=1000
 WORKDIR /app
-COPY --from=publish --chown=$APP_UID:$APP_UID /app/publish .
-USER $APP_UID
+COPY --from=publish --chown=${APP_UID}:${APP_UID} /app/publish .
+USER ${APP_UID}
 ENTRYPOINT ["dotnet", "GitHubIntegrationService.dll"]

@@ -1,0 +1,72 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Docker: Attach to GitHub Integration API",
+            "type": "docker",
+            "request": "attach",
+            "mode": "debug",
+            "dockerComposeFile": "docker-compose.yml",
+            "service": "github-integration-api",
+            "projectPath": "${workspaceFolder}/src/GitHubIntegrationApi/",
+            "dockerfile": "Dockerfile",
+            "contextPath": "${workspaceFolder}",
+            "netCoreAttachConfiguration": {
+                "processId": "${command:pickProcess}",
+                "pipeProgram": "docker",
+                "pipeArgs": [
+                    "exec",
+                    "-i",
+                    "github-integration-api"
+                ],
+                "pipeLaunchArgs": ""
+            }
+        },
+        {
+            "name": "Docker: Attach to GitHub Integration Service",
+            "type": "docker",
+            "request": "attach",
+            "mode": "debug",
+            "dockerComposeFile": "docker-compose.yml",
+            "service": "github-integration-service",
+            "projectPath": "${workspaceFolder}/src/GitHubIntegrationService/",
+            "dockerfile": "Dockerfile",
+            "contextPath": "${workspaceFolder}",
+            "netCoreAttachConfiguration": {
+                "processId": "${command:pickProcess}",
+                "pipeProgram": "docker",
+                "pipeArgs": [
+                    "exec",
+                    "-i",
+                    "github-integration-service"
+                ],
+                "pipeLaunchArgs": ""
+            }
+        },
+        {
+            "name": "Docker Compose: Start and Debug",
+            "type": "docker",
+            "request": "launch",
+            "dockerCompose": {
+                "files": [
+                    "docker-compose.yml",
+                    "docker-compose.override.yml"
+                ],
+                "fromVsCode": true
+            },
+            "netCore": {
+                "appProject": "${workspaceFolder}/src/GitHubIntegrationApi/GitHubIntegrationApi.csproj"
+            }
+        },
+        {
+            "type": "dockerfile",
+            "request": "launch",
+            "name": "Docker: Build",
+            "dockerfile": "Dockerfile",
+            "contextPath": "${workspaceFolder}"
+        }
+    ]
+}

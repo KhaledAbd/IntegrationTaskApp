@@ -8,7 +8,11 @@
 
 body {
   margin: 0;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family:
+    'Inter',
+    system-ui,
+    -apple-system,
+    sans-serif;
   background-color: var(--background);
   color: var(--text);
   line-height: 1.5;
@@ -16,7 +20,12 @@ body {
   min-height: 100vh;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   color: var(--text);
   font-weight: 700;
   letter-spacing: -0.025em;
@@ -107,6 +116,66 @@ a:hover {
   border-radius: 0.5rem;
 }
 
+/* Pager Page Sizes Dropdown Styling */
+.k-pager-sizes {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-muted) !important;
+}
+
+.k-pager-sizes kendo-dropdownlist,
+.k-pager-sizes .k-dropdownlist {
+  width: auto !important;
+  min-width: 80px !important;
+  background: rgba(0, 0, 0, 0.2) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 0.5rem !important;
+  transition: var(--transition) !important;
+}
+
+.k-pager-sizes .k-dropdownlist:hover {
+  border-color: var(--primary) !important;
+  background: rgba(0, 0, 0, 0.3) !important;
+}
+
+.k-pager-sizes .k-input-inner {
+  padding: 0.25rem 0.75rem !important;
+  font-size: 0.875rem !important;
+  color: var(--text) !important;
+}
+
+.k-pager-sizes .k-input-button {
+  background: transparent !important;
+  border: none !important;
+  color: var(--text-muted) !important;
+}
+
+/* Premium Dropdown List Items */
+.k-list-container {
+  background: var(--surface) !important;
+  backdrop-filter: blur(var(--blur)) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 0.5rem !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+.k-list-item {
+  color: var(--text) !important;
+  transition: background 0.2s !important;
+  padding: 0.5rem 1rem !important;
+}
+
+.k-list-item:hover,
+.k-list-item.k-hover {
+  background: rgba(255, 255, 255, 0.05) !important;
+}
+
+.k-list-item.k-selected {
+  background: var(--grad-primary) !important;
+  color: white !important;
+}
+
 /* Premium Buttons */
 .k-button-solid-primary {
   background: var(--grad-primary) !important;
@@ -153,9 +222,9 @@ a:hover {
   border-color: var(--primary) !important;
 }
 
-
 /* Kendo Inputs */
-.k-input, .k-textbox {
+.k-input,
+.k-textbox {
   background: rgba(0, 0, 0, 0.2) !important;
   border: 1px solid rgba(255, 255, 255, 0.15) !important;
   border-radius: 0.75rem !important;
@@ -163,13 +232,16 @@ a:hover {
   color: var(--text) !important;
 }
 
-.k-input:hover, .k-textbox:hover {
+.k-input:hover,
+.k-textbox:hover {
   border-color: rgba(255, 255, 255, 0.3) !important;
   background: rgba(0, 0, 0, 0.25) !important;
 }
 
-.k-input:focus-within, .k-input:focus,
-.k-textbox:focus-within, .k-textbox:focus {
+.k-input:focus-within,
+.k-input:focus,
+.k-textbox:focus-within,
+.k-textbox:focus {
   border-color: var(--primary) !important;
   box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3) !important;
   background: rgba(0, 0, 0, 0.3) !important;
@@ -314,7 +386,8 @@ a:hover {
   background: rgba(0, 0, 0, 0.3) !important;
 }
 
-.k-calendar-view, .k-calendar {
+.k-calendar-view,
+.k-calendar {
   background: var(--surface) !important;
   color: var(--text) !important;
   border-radius: var(--radius) !important;
@@ -391,9 +464,21 @@ a:hover {
 }
 
 @keyframes pulse-icon {
-  0% { transform: scale(1); opacity: 1; filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.4)); }
-  50% { transform: scale(1.1); opacity: 0.8; filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.8)); }
-  100% { transform: scale(1); opacity: 1; filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.4)); }
+  0% {
+    transform: scale(1);
+    opacity: 1;
+    filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.4));
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+    filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.8));
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+    filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.4));
+  }
 }
 
 .badge {
@@ -472,4 +557,40 @@ a:hover {
 
 .premium-grid {
   height: 100%;
+}
+
+/* --- Reload & Loading Clarity --- */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+.k-loading-mask {
+  background-color: rgba(9, 14, 23, 0.7) !important;
+  backdrop-filter: blur(4px);
+  z-index: 100;
+}
+
+.k-i-loading,
+.k-svg-i-redo {
+  color: var(--secondary) !important;
+}
+
+.k-i-loading {
+  font-size: 2.5rem !important;
+  filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.5));
+}
+
+.premium-grid .k-button-flat-secondary {
+  color: var(--secondary) !important;
+  padding: 0.5rem !important;
+  border-radius: 0.5rem !important;
+}
+
+.premium-grid .k-button-flat-secondary:hover {
+  background: rgba(56, 189, 248, 0.15) !important;
 }

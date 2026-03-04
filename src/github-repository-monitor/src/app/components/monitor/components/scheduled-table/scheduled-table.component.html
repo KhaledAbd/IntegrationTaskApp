@@ -10,16 +10,16 @@
     </div>
   </div>
 
-  <kendo-grid 
-    [data]="gridView" 
-    [loading]="loading" 
+  <kendo-grid
+    [data]="gridView"
+    [loading]="loading"
     scrollable="none"
     class="premium-grid"
     [navigable]="true"
     filterable="row"
     [filter]="filterState"
     (filterChange)="onFilterChange($event)"
-    [pageable]="true"
+    [pageable]="pagerSettings"
     [pageSize]="pageSize"
     [skip]="skip"
     (pageChange)="onPageChange($event)"
@@ -27,17 +27,22 @@
     <ng-template kendoGridToolbarTemplate>
       <div class="toolbar-content">
         <kendo-grid-spacer></kendo-grid-spacer>
-        
-        <button kendoButton [themeColor]="'secondary'" (click)="refresh()" [disabled]="loading" fillMode="flat" type="button">
+
+        <button
+          kendoButton
+          [themeColor]="'secondary'"
+          (click)="refresh()"
+          [disabled]="loading"
+          fillMode="flat"
+          type="button"
+        >
           <kendo-svgicon [icon]="refreshSVG" [class.spin]="loading"></kendo-svgicon>
         </button>
-        
+
         <button kendoGridExcelCommand type="button" [svgIcon]="excelSVG" fillMode="outline">
           Export to Excel
         </button>
-        <button kendoGridPDFCommand [svgIcon]="pdfSVG" fillMode="outline">
-          Export to PDF
-        </button>
+        <button kendoGridPDFCommand [svgIcon]="pdfSVG" fillMode="outline">Export to PDF</button>
       </div>
     </ng-template>
 
@@ -65,19 +70,16 @@
         </div>
       </ng-template>
     </kendo-grid-column>
-    
+
     <kendo-grid-column field="date" title="Date" [width]="200">
       <ng-template kendoGridFilterCellTemplate let-filter>
-        <app-date-range-filter-cell
-          [filter]="filter"
-          field="date"
-        ></app-date-range-filter-cell>
+        <app-date-range-filter-cell [filter]="filter" field="date"></app-date-range-filter-cell>
       </ng-template>
       <ng-template kendoGridCellTemplate let-dataItem>
         <span class="date-text">{{ dataItem.date | date: 'MMM d, y, h:mm a' }}</span>
       </ng-template>
     </kendo-grid-column>
-    
+
     <kendo-grid-column field="sha" title="Commit SHA" [width]="120" [filterable]="false">
       <ng-template kendoGridCellTemplate let-dataItem>
         <code class="sha">{{ dataItem.sha?.substring(0, 7) }}</code>
@@ -90,10 +92,7 @@
       </ng-template>
     </kendo-grid-column>
 
-    <kendo-grid-pdf
-      fileName="ScheduledCommits.pdf"
-      [repeatHeaders]="true"
-    ></kendo-grid-pdf>
+    <kendo-grid-pdf fileName="ScheduledCommits.pdf" [repeatHeaders]="true"></kendo-grid-pdf>
     <kendo-grid-excel fileName="ScheduledCommits.xlsx"></kendo-grid-excel>
   </kendo-grid>
 </section>

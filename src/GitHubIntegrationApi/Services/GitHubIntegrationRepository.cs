@@ -13,18 +13,20 @@ namespace GitHubIntegrationApi.Services
     public class GitHubIntegrationRepository : IGitHubIntegrationRepository
     {
         private readonly string _wcfServiceUrl;
+        private readonly long _maxReceivedMessageSize;
         private readonly ILogger<GitHubIntegrationRepository> _logger;
 
         public GitHubIntegrationRepository(IConfiguration configuration, ILogger<GitHubIntegrationRepository> logger)
         {
             _wcfServiceUrl = configuration["WcfServiceUrl"] ?? "http://github-integration-service:8080/GitHubService.svc";
+            _maxReceivedMessageSize = configuration.GetValue<long>("MaxReceivedMessageSize", 2147483647);
             _logger = logger;
         }
 
         private IGitHubService CreateChannel()
         {
             var binding = new BasicHttpBinding();
-            binding.MaxReceivedMessageSize = 2147483647; // To ensure large responses are supported
+            binding.MaxReceivedMessageSize = _maxReceivedMessageSize; // To ensure large responses are supported
             var endpoint = new EndpointAddress(_wcfServiceUrl);
             var factory = new ChannelFactory<IGitHubService>(binding, endpoint);
             return factory.CreateChannel();

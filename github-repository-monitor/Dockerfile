@@ -8,6 +8,7 @@ RUN npm install
 
 # Copy source and build
 COPY . .
+RUN npx kendo-ui-license activate
 RUN npm run build
 
 # Final stage

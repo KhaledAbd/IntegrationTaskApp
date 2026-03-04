@@ -41,7 +41,17 @@ namespace GitHubIntegrationService.Jobs
             {
                 _logger.LogInformation("Job Refreshing GitHub commits cache for repository: {RepoUrl}", _repoUrl);
 
-                var request = new HttpRequestMessage(HttpMethod.Get, _repoUrl);
+                var lastSyncTime = _cache.GetLastSyncTime();
+                var existingCommits = _cache.GetCommits();
+
+                var url = _repoUrl.Contains("?") ? $"{_repoUrl}&per_page=100" : $"{_repoUrl}?per_page=100";
+                
+                if (lastSyncTime > DateTime.MinValue)
+                {
+                    url += $"&since={lastSyncTime.ToUniversalTime():yyyy-MM-ddTHH:mm:ssZ}";
+                }
+
+                var request = new HttpRequestMessage(HttpMethod.Get, url);
                 request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token);
                 request.Headers.UserAgent.ParseAdd(_userAgent);
 
@@ -59,15 +69,29 @@ namespace GitHubIntegrationService.Jobs
                 var options = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                 var commits = JsonSerializer.Deserialize<List<GitHubCommit>>(content, options);
 
-                if (commits != null)
+                if (commits != null && commits.Any())
                 {
-                    var last10 = commits.Take(10).ToList();
-                    _logger.LogInformation("Job Updating local cache with {Count} latest commits.", last10.Count);
-                    _cache.UpdateCommits(last10);
+                    var newCommits = commits.Where(c => !existingCommits.Any(ec => ec.Sha == c.Sha)).ToList();
+                    
+                    if (newCommits.Any())
+                    {
+                        var allCommits = newCommits.Concat(existingCommits)
+                            .OrderByDescending(c => c.Commit?.Author?.Date)
+                            .ToList();
+                            
+                        _logger.LogInformation("Job Updating local cache with {Count} new commits (Total: {Total}).", newCommits.Count, allCommits.Count);
+                        _cache.UpdateCommits(allCommits);
+                    }
+                    else
+                    {
+                        _logger.LogInformation("Job found no new commits after deduplication. Updating sync time.");
+                        _cache.UpdateCommits(existingCommits);
+                    }
                 }
                 else
                 {
-                    _logger.LogWarning("Job GitHub API returned no commits.");
+                    _logger.LogWarning("Job GitHub API returned no commits. Updating sync time.");
+                    _cache.UpdateCommits(existingCommits);
                 }
 
                 _logger.LogInformation("Job 'GitHubCommitJob' completed successfully.");

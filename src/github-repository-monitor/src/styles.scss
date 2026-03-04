@@ -155,23 +155,36 @@ a:hover {
 
 
 /* Kendo Inputs */
-.k-textbox, .k-input-inner {
-  background: transparent !important;
-  color: var(--text) !important;
-}
-
-.k-input-md {
+.k-input, .k-textbox {
   background: rgba(0, 0, 0, 0.2) !important;
-  border: 1px solid var(--glass-border) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
   border-radius: 0.75rem !important;
   transition: var(--transition) !important;
   color: var(--text) !important;
 }
 
-.k-input-md:focus-within, .k-input-md:focus {
+.k-input:hover, .k-textbox:hover {
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  background: rgba(0, 0, 0, 0.25) !important;
+}
+
+.k-input:focus-within, .k-input:focus,
+.k-textbox:focus-within, .k-textbox:focus {
   border-color: var(--primary) !important;
   box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3) !important;
   background: rgba(0, 0, 0, 0.3) !important;
+}
+
+.k-input-inner {
+  background: transparent !important;
+  color: var(--text) !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.k-input-inner::placeholder {
+  color: var(--text-muted) !important;
+  opacity: 1 !important;
 }
 
 /* Base button fallbacks (like export buttons) */
@@ -285,9 +298,14 @@ a:hover {
 .k-dateinput {
   background: rgba(0, 0, 0, 0.2) !important;
   border-radius: 0.75rem !important;
-  border: 1px solid var(--glass-border) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
   transition: var(--transition) !important;
   color: var(--text) !important;
+}
+
+.k-dateinput:hover {
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  background: rgba(0, 0, 0, 0.25) !important;
 }
 
 .k-dateinput:focus-within {

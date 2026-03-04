@@ -6,7 +6,7 @@ namespace GitHubIntegrationApi.Services
 {
     public interface IGitHubIntegrationRepository
     {
-        Task<List<GitHubCommitDto>> GetLiveCommitsAsync(string searchText, DateTime? startDate, DateTime? endDate, int page, int pageSize);
+        Task<LiveCommitsDto> GetLiveCommitsAsync(string searchText, DateTime? startDate, DateTime? endDate, int page, int pageSize);
         Task<ScheduledCommitsDto> GetScheduledCommitsAsync(string searchText, DateTime? startDate, DateTime? endDate, int page, int pageSize);
     }
 
@@ -30,14 +30,22 @@ namespace GitHubIntegrationApi.Services
             return factory.CreateChannel();
         }
 
-        public async Task<List<GitHubCommitDto>> GetLiveCommitsAsync(string searchText, DateTime? startDate, DateTime? endDate, int page, int pageSize)
+        public async Task<LiveCommitsDto> GetLiveCommitsAsync(string searchText, DateTime? startDate, DateTime? endDate, int page, int pageSize)
         {
-            _logger.LogInformation("Calling WCF GetLiveCommits...");
+            _logger.LogInformation("Calling WCF GetLiveCommits and GetLiveCommitsCount...");
             var channel = CreateChannel();
             try
             {
-                var commits = await channel.GetLiveCommits(searchText, startDate, endDate, page, pageSize);
-                return MapCommits(commits, "Live");
+                var commitsTask = channel.GetLiveCommits(searchText, startDate, endDate, page, pageSize);
+                var countTask = channel.GetLiveCommitsCount(searchText, startDate, endDate);
+                
+                await Task.WhenAll(commitsTask, countTask);
+
+                return new LiveCommitsDto
+                {
+                    Items = MapCommits(await commitsTask, "Live"),
+                    TotalCount = await countTask
+                };
             }
             finally
             {
@@ -59,7 +67,7 @@ namespace GitHubIntegrationApi.Services
                 
                 return new ScheduledCommitsDto
                 {
-                    Commits = MapCommits(await commitsTask, "Scheduled"),
+                    Items = MapCommits(await commitsTask, "Scheduled"),
                     TotalCount = await countTask,
                     LastSyncTime = await syncTimeTask
                 };

@@ -37,4 +37,16 @@ namespace GitHubIntegrationService.Models
         [DataMember]
         public System.DateTime Date { get; set; }
     }
+    [DataContract]
+    public class GitHubSearchResult
+    {
+        [DataMember]
+        public int TotalCount { get; set; }
+        
+        [DataMember]
+        public bool IncompleteResults { get; set; }
+        
+        [DataMember]
+        public List<GitHubCommit> Items { get; set; } = new();
+    }
 }

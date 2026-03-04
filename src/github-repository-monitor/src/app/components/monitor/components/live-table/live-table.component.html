@@ -16,6 +16,10 @@
     filterable="row"
     [filter]="filterState"
     (filterChange)="onFilterChange($event)"
+    [pageable]="true"
+    [pageSize]="pageSize"
+    [skip]="skip"
+    (pageChange)="onPageChange($event)"
   >
     <ng-template kendoGridToolbarTemplate>
       <div class="toolbar-content">

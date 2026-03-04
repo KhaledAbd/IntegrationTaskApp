@@ -105,7 +105,7 @@ export class ScheduledTableComponent implements OnInit {
       next: (response) => {
         if (response.success && response.data) {
           this.gridView = {
-            data: response.data.commits ?? [],
+            data: response.data.items ?? [],
             total: response.data.totalCount ?? 0
           };
           this.lastSyncTime = response.data.lastSyncTime ? response.data.lastSyncTime.toLocaleString() : null;

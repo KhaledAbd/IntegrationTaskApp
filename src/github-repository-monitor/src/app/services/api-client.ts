@@ -25,7 +25,7 @@ export class GitHubClient {
         this.baseUrl = baseUrl ?? "http://localhost:8080";
     }
 
-    getLive(searchText: string | null | undefined, startDate: Date | null | undefined, endDate: Date | null | undefined, page: number | undefined, pageSize: number | undefined): Observable<ApiResponseOfListOfGitHubCommitDto> {
+    getLive(searchText: string | null | undefined, startDate: Date | null | undefined, endDate: Date | null | undefined, page: number | undefined, pageSize: number | undefined): Observable<ApiResponseOfLiveCommitsDto> {
         let url_ = this.baseUrl + "/api/GitHub/live?";
         if (searchText !== undefined && searchText !== null)
             url_ += "searchText=" + encodeURIComponent("" + searchText) + "&";
@@ -58,14 +58,14 @@ export class GitHubClient {
                 try {
                     return this.processGetLive(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<ApiResponseOfListOfGitHubCommitDto>;
+                    return _observableThrow(e) as any as Observable<ApiResponseOfLiveCommitsDto>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<ApiResponseOfListOfGitHubCommitDto>;
+                return _observableThrow(response_) as any as Observable<ApiResponseOfLiveCommitsDto>;
         }));
     }
 
-    protected processGetLive(response: HttpResponseBase): Observable<ApiResponseOfListOfGitHubCommitDto> {
+    protected processGetLive(response: HttpResponseBase): Observable<ApiResponseOfLiveCommitsDto> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -76,7 +76,7 @@ export class GitHubClient {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = ApiResponseOfListOfGitHubCommitDto.fromJS(resultData200);
+            result200 = ApiResponseOfLiveCommitsDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -150,12 +150,12 @@ export class GitHubClient {
     }
 }
 
-export class ApiResponseOfListOfGitHubCommitDto implements IApiResponseOfListOfGitHubCommitDto {
+export class ApiResponseOfLiveCommitsDto implements IApiResponseOfLiveCommitsDto {
     success?: boolean;
     message?: string;
-    data?: GitHubCommitDto[] | undefined;
+    data?: LiveCommitsDto | undefined;
 
-    constructor(data?: IApiResponseOfListOfGitHubCommitDto) {
+    constructor(data?: IApiResponseOfLiveCommitsDto) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -168,17 +168,13 @@ export class ApiResponseOfListOfGitHubCommitDto implements IApiResponseOfListOfG
         if (_data) {
             this.success = _data["success"];
             this.message = _data["message"];
-            if (Array.isArray(_data["data"])) {
-                this.data = [] as any;
-                for (let item of _data["data"])
-                    this.data!.push(GitHubCommitDto.fromJS(item));
-            }
+            this.data = _data["data"] ? LiveCommitsDto.fromJS(_data["data"]) : undefined as any;
         }
     }
 
-    static fromJS(data: any): ApiResponseOfListOfGitHubCommitDto {
+    static fromJS(data: any): ApiResponseOfLiveCommitsDto {
         data = typeof data === 'object' ? data : {};
-        let result = new ApiResponseOfListOfGitHubCommitDto();
+        let result = new ApiResponseOfLiveCommitsDto();
         result.init(data);
         return result;
     }
@@ -187,19 +183,90 @@ export class ApiResponseOfListOfGitHubCommitDto implements IApiResponseOfListOfG
         data = typeof data === 'object' ? data : {};
         data["success"] = this.success;
         data["message"] = this.message;
-        if (Array.isArray(this.data)) {
-            data["data"] = [];
-            for (let item of this.data)
-                data["data"].push(item ? item.toJSON() : undefined as any);
-        }
+        data["data"] = this.data ? this.data.toJSON() : undefined as any;
         return data;
     }
 }
 
-export interface IApiResponseOfListOfGitHubCommitDto {
+export interface IApiResponseOfLiveCommitsDto {
     success?: boolean;
     message?: string;
-    data?: GitHubCommitDto[] | undefined;
+    data?: LiveCommitsDto | undefined;
+}
+
+export class PagedResultOfGitHubCommitDto implements IPagedResultOfGitHubCommitDto {
+    items?: GitHubCommitDto[];
+    totalCount?: number;
+
+    constructor(data?: IPagedResultOfGitHubCommitDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (this as any)[property] = (data as any)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(GitHubCommitDto.fromJS(item));
+            }
+            this.totalCount = _data["totalCount"];
+        }
+    }
+
+    static fromJS(data: any): PagedResultOfGitHubCommitDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PagedResultOfGitHubCommitDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item ? item.toJSON() : undefined as any);
+        }
+        data["totalCount"] = this.totalCount;
+        return data;
+    }
+}
+
+export interface IPagedResultOfGitHubCommitDto {
+    items?: GitHubCommitDto[];
+    totalCount?: number;
+}
+
+export class LiveCommitsDto extends PagedResultOfGitHubCommitDto implements ILiveCommitsDto {
+
+    constructor(data?: ILiveCommitsDto) {
+        super(data);
+    }
+
+    override init(_data?: any) {
+        super.init(_data);
+    }
+
+    static override fromJS(data: any): LiveCommitsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new LiveCommitsDto();
+        result.init(data);
+        return result;
+    }
+
+    override toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        super.toJSON(data);
+        return data;
+    }
+}
+
+export interface ILiveCommitsDto extends IPagedResultOfGitHubCommitDto {
 }
 
 export class GitHubCommitDto implements IGitHubCommitDto {
@@ -306,55 +373,36 @@ export interface IApiResponseOfScheduledCommitsDto {
     data?: ScheduledCommitsDto | undefined;
 }
 
-export class ScheduledCommitsDto implements IScheduledCommitsDto {
-    commits?: GitHubCommitDto[];
-    totalCount?: number;
+export class ScheduledCommitsDto extends PagedResultOfGitHubCommitDto implements IScheduledCommitsDto {
     lastSyncTime?: Date;
 
     constructor(data?: IScheduledCommitsDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (this as any)[property] = (data as any)[property];
-            }
-        }
+        super(data);
     }
 
-    init(_data?: any) {
+    override init(_data?: any) {
+        super.init(_data);
         if (_data) {
-            if (Array.isArray(_data["commits"])) {
-                this.commits = [] as any;
-                for (let item of _data["commits"])
-                    this.commits!.push(GitHubCommitDto.fromJS(item));
-            }
-            this.totalCount = _data["totalCount"];
             this.lastSyncTime = _data["lastSyncTime"] ? new Date(_data["lastSyncTime"].toString()) : undefined as any;
         }
     }
 
-    static fromJS(data: any): ScheduledCommitsDto {
+    static override fromJS(data: any): ScheduledCommitsDto {
         data = typeof data === 'object' ? data : {};
         let result = new ScheduledCommitsDto();
         result.init(data);
         return result;
     }
 
-    toJSON(data?: any) {
+    override toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.commits)) {
-            data["commits"] = [];
-            for (let item of this.commits)
-                data["commits"].push(item ? item.toJSON() : undefined as any);
-        }
-        data["totalCount"] = this.totalCount;
         data["lastSyncTime"] = this.lastSyncTime ? this.lastSyncTime.toISOString() : undefined as any;
+        super.toJSON(data);
         return data;
     }
 }
 
-export interface IScheduledCommitsDto {
-    commits?: GitHubCommitDto[];
-    totalCount?: number;
+export interface IScheduledCommitsDto extends IPagedResultOfGitHubCommitDto {
     lastSyncTime?: Date;
 }
 

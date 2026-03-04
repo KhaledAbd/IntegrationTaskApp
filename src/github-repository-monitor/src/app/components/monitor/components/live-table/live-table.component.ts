@@ -110,11 +110,10 @@ export class LiveTableComponent implements OnInit, OnDestroy {
         this.pageSize
     ).subscribe({
       next: (response) => {
-        if (response.success) {
-          const data = response.data ?? [];
+        if (response.success && response.data) {
           this.gridView = {
-            data: data,
-            total: this.skip + data.length + (data.length === this.pageSize ? 1 : 0)
+            data: response.data.items ?? [],
+            total: response.data.totalCount ?? 0
           };
         }
         this.loading = false;

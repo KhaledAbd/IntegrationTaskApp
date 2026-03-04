@@ -48,38 +48,38 @@ services:
     volumes:
       - github-service-data:/app_data
 
-  github-repository-monitor:
-    build:
-      context: .
-      dockerfile: src/github-repository-monitor/Dockerfile
-    image: github-repository-monitor:dev
-    ports:
-      - "4200:80"
-    environment:
-      - API_URL=http://localhost:8080
-    depends_on:
-      github-integration-api:
-        condition: service_healthy
-    restart: unless-stopped
-    networks:
-      - appnet
-    volumes:
-      - ./src/github-repository-monitor/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+  # github-repository-monitor:
+  #   build:
+  #     context: .
+  #     dockerfile: src/github-repository-monitor/Dockerfile
+  #   image: github-repository-monitor:dev
+  #   ports:
+  #     - "4200:80"
+  #   environment:
+  #     - API_URL=http://localhost:8080
+  #   depends_on:
+  #     github-integration-api:
+  #       condition: service_healthy
+  #   restart: unless-stopped
+  #   networks:
+  #     - appnet
+  #   volumes:
+  #     - ./src/github-repository-monitor/nginx.conf:/etc/nginx/conf.d/default.conf:ro
 
-  github-pusher:
-    build:
-      context: src/github-pusher
-      dockerfile: Dockerfile
-    dns:
-      - 8.8.8.8
-      - 8.8.4.4
-    environment:
-      - GITHUB_TOKEN=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
-      - REPO_OWNER=KhaledAbd
-      - REPO_NAME=IntegrationTaskApp
-    restart: unless-stopped
-    networks:
-      - appnet
+  # github-pusher:
+  #   build:
+  #     context: src/github-pusher
+  #     dockerfile: Dockerfile
+  #   dns:
+  #     - 8.8.8.8
+  #     - 8.8.4.4
+  #   environment:
+  #     - GITHUB_TOKEN=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
+  #     - REPO_OWNER=KhaledAbd
+  #     - REPO_NAME=IntegrationTaskApp
+  #   restart: unless-stopped
+  #   networks:
+  #     - appnet
 
 networks:
   appnet:

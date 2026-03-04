@@ -8,10 +8,7 @@ namespace GitHubIntegrationApi.Services.Wcf
     public interface IGitHubService
     {
         [OperationContract]
-        Task<List<GitHubWcfCommit>> GetLiveCommits(string searchText, DateTime? startDate, DateTime? endDate, int page, int pageSize);
-
-        [OperationContract]
-        Task<int> GetLiveCommitsCount(string searchText, DateTime? startDate, DateTime? endDate);
+        Task<List<GitHubWcfCommit>> GetLiveCommits();
 
         [OperationContract]
         List<GitHubWcfCommit> GetScheduledCommits(string searchText, DateTime? startDate, DateTime? endDate, int page, int pageSize);

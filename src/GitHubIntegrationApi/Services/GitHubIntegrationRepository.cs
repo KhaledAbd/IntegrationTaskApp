@@ -6,7 +6,7 @@ namespace GitHubIntegrationApi.Services
 {
     public interface IGitHubIntegrationRepository
     {
-        Task<LiveCommitsDto> GetLiveCommitsAsync(string searchText, DateTime? startDate, DateTime? endDate, int page, int pageSize);
+        Task<LiveCommitsDto> GetLiveCommitsAsync();
         Task<ScheduledCommitsDto> GetScheduledCommitsAsync(string searchText, DateTime? startDate, DateTime? endDate, int page, int pageSize);
     }
 
@@ -30,21 +30,18 @@ namespace GitHubIntegrationApi.Services
             return factory.CreateChannel();
         }
 
-        public async Task<LiveCommitsDto> GetLiveCommitsAsync(string searchText, DateTime? startDate, DateTime? endDate, int page, int pageSize)
+        public async Task<LiveCommitsDto> GetLiveCommitsAsync()
         {
             _logger.LogInformation("Calling WCF GetLiveCommits and GetLiveCommitsCount...");
             var channel = CreateChannel();
             try
             {
-                var commitsTask = channel.GetLiveCommits(searchText, startDate, endDate, page, pageSize);
-                var countTask = channel.GetLiveCommitsCount(searchText, startDate, endDate);
+                var commitsTask = channel.GetLiveCommits();
                 
-                await Task.WhenAll(commitsTask, countTask);
-
                 return new LiveCommitsDto
                 {
                     Items = MapCommits(await commitsTask, "Live"),
-                    TotalCount = await countTask
+                    TotalCount = (await commitsTask).Count
                 };
             }
             finally

@@ -9,10 +9,7 @@ namespace GitHubIntegrationService.Services
     public interface IGitHubService
     {
         [OperationContract]
-        Task<List<GitHubCommit>> GetLiveCommits(string searchText, System.DateTime? startDate, System.DateTime? endDate, int page, int pageSize);
-
-        [OperationContract]
-        Task<int> GetLiveCommitsCount(string searchText, System.DateTime? startDate, System.DateTime? endDate);
+        Task<List<GitHubCommit>> GetLiveCommits();
 
         [OperationContract]
         List<GitHubCommit> GetScheduledCommits(string searchText, System.DateTime? startDate, System.DateTime? endDate, int page, int pageSize);

@@ -49,7 +49,7 @@
       </ng-template>
     </kendo-grid-column>
 
-    <kendo-grid-column field="authorName" title="Name / Email" [width]="200">
+    <kendo-grid-column field="authorName" title="Author" [width]="200">
       <ng-template kendoGridFilterCellTemplate let-filter let-column="column">
         <kendo-grid-string-filter-cell
           [column]="column"
@@ -78,9 +78,15 @@
       </ng-template>
     </kendo-grid-column>
     
-    <kendo-grid-column field="sha" title="SHA" [width]="120" [filterable]="false">
+    <kendo-grid-column field="sha" title="Commit SHA" [width]="120" [filterable]="false">
       <ng-template kendoGridCellTemplate let-dataItem>
         <code class="sha">{{ dataItem.sha?.substring(0, 7) }}</code>
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column title="Source" [width]="100" [filterable]="false">
+      <ng-template kendoGridCellTemplate>
+        <span class="badge badge-scheduled">Scheduled</span>
       </ng-template>
     </kendo-grid-column>
 

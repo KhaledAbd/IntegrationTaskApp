@@ -34,33 +34,20 @@ namespace GitHubIntegrationService.Services
             _logger.LogInformation("GitHubService initialized for Repository: {RepoUrl}", _repoUrl);
         }
 
-        public async Task<List<GitHubCommit>> GetLiveCommits(string searchText, DateTime? startDate, DateTime? endDate, int page, int pageSize)
+        public async Task<List<GitHubCommit>> GetLiveCommits()
         {
-            _logger.LogInformation("Received request for Live Commits. Search: {Search}, Start: {Start}, End: {End}, Page: {Page}, PageSize: {PageSize}", searchText, startDate, endDate, page, pageSize);
+            _logger.LogInformation("Received request for Live Commits.");
 
             try
             {
                 var queryParams = new List<string>
                 {
-                    $"page={page}",
-                    $"per_page={pageSize}"
+                    "per_page=100"
                 };
 
-                if (!string.IsNullOrWhiteSpace(searchText))
-                {
-                    queryParams.Add($"author={Uri.EscapeDataString(searchText)}");
-                }
+                var lastTime = _cache.GetLastSyncTime();
+                queryParams.Add($"since={lastTime:yyyy-MM-ddTHH:mm:ssZ}");
                 
-                if (startDate.HasValue)
-                {
-                    queryParams.Add($"since={startDate.Value:yyyy-MM-ddTHH:mm:ssZ}");
-                }
-
-                if (endDate.HasValue)
-                {
-                    queryParams.Add($"until={endDate.Value:yyyy-MM-ddTHH:mm:ssZ}");
-                }
-
                 var url = $"{_repoUrl}?{string.Join("&", queryParams)}";
                 
                 var request = new HttpRequestMessage(HttpMethod.Get, url);
@@ -135,80 +122,6 @@ namespace GitHubIntegrationService.Services
                 query = query.Where(c => c.Commit?.Author?.Date <= endDate.Value);
             }
             return query.Count();
-        }
-
-        public async Task<int> GetLiveCommitsCount(string searchText, DateTime? startDate, DateTime? endDate)
-        {
-            _logger.LogInformation("Received request for Live Commits Count using Commits API. Search: {Search}, Start: {Start}, End: {End}", searchText, startDate, endDate);
-
-            try
-            {
-                var queryParams = new List<string> { "per_page=1" };
-
-                if (!string.IsNullOrWhiteSpace(searchText))
-                {
-                    queryParams.Add($"author={Uri.EscapeDataString(searchText)}");
-                }
-                
-                if (startDate.HasValue)
-                {
-                    queryParams.Add($"since={startDate.Value:yyyy-MM-ddTHH:mm:ssZ}");
-                }
-
-                if (endDate.HasValue)
-                {
-                    queryParams.Add($"until={endDate.Value:yyyy-MM-ddTHH:mm:ssZ}");
-                }
-
-                var url = $"{_repoUrl}?{string.Join("&", queryParams)}";
-                
-                var request = new HttpRequestMessage(HttpMethod.Get, url);
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _token);
-                request.Headers.UserAgent.ParseAdd(_userAgent);
-
-                _logger.LogInformation("Sending request to GitHub Commits API for count: {Url}", url);
-                var response = await _httpClient.SendAsync(request);
-                
-                if (!response.IsSuccessStatusCode)
-                {
-                    var errorContent = await response.Content.ReadAsStringAsync();
-                    _logger.LogError("GitHub API request failed with Status Code: {StatusCode}. Response: {Response}", response.StatusCode, errorContent);
-                    response.EnsureSuccessStatusCode();
-                }
-
-                // GitHub's pagination for the commits API exposes the total via the 'Link' header
-                // Reference: https://docs.github.com/en/rest/guides/using-pagination-in-the-rest-api
-                if (response.Headers.TryGetValues("Link", out var linkValues))
-                {
-                    var linkHeader = string.Join(", ", linkValues);
-                    var links = linkHeader.Split(',');
-                    var lastLink = links.FirstOrDefault(l => l.Contains("rel=\"last\""));
-                    
-                    if (lastLink != null)
-                    {
-                        // Format: <url?page=N>; rel="last"
-                        var match = System.Text.RegularExpressions.Regex.Match(lastLink, @"page=(\d+)");
-                        if (match.Success && int.TryParse(match.Groups[1].Value, out var lastPage))
-                        {
-                            _logger.LogInformation("Extracted total count from Link header: {Count}", lastPage);
-                            return lastPage;
-                        }
-                    }
-                }
-
-                // If no Link header, check if we have any items at all
-                var content = await response.Content.ReadAsStringAsync();
-                var commits = JsonSerializer.Deserialize<List<JsonElement>>(content);
-                var count = commits?.Count ?? 0;
-                
-                _logger.LogInformation("No Link header found. Counted {Count} items in response.", count);
-                return count;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while fetching live commits count from GitHub.");
-                throw;
-            }
         }
 
         public DateTime GetLastSyncTime()

@@ -18,10 +18,10 @@ namespace GitHubIntegrationApi.Controllers
         }
 
         [HttpGet("live")]
-        public async Task<ActionResult<ApiResponse<LiveCommitsDto>>> GetLive([FromQuery] string? searchText, [FromQuery] DateTime? startDate, [FromQuery] DateTime? endDate, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        public async Task<ActionResult<ApiResponse<LiveCommitsDto>>> GetLive()
         {
             _logger.LogInformation("GET /api/github/live requested.");
-            var result = await _repository.GetLiveCommitsAsync(searchText ?? string.Empty, startDate, endDate, page, pageSize);
+            var result = await _repository.GetLiveCommitsAsync();
             return Ok(ApiResponse<LiveCommitsDto>.Ok(result, "Successfully retrieved live commits."));
         }
 

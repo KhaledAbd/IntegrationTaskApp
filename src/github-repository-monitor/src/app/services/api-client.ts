@@ -25,22 +25,8 @@ export class GitHubClient {
         this.baseUrl = baseUrl ?? "http://localhost:8080";
     }
 
-    getLive(searchText: string | null | undefined, startDate: Date | null | undefined, endDate: Date | null | undefined, page: number | undefined, pageSize: number | undefined): Observable<ApiResponseOfLiveCommitsDto> {
-        let url_ = this.baseUrl + "/api/GitHub/live?";
-        if (searchText !== undefined && searchText !== null)
-            url_ += "searchText=" + encodeURIComponent("" + searchText) + "&";
-        if (startDate !== undefined && startDate !== null)
-            url_ += "startDate=" + encodeURIComponent(startDate ? "" + startDate.toISOString() : "") + "&";
-        if (endDate !== undefined && endDate !== null)
-            url_ += "endDate=" + encodeURIComponent(endDate ? "" + endDate.toISOString() : "") + "&";
-        if (page === null)
-            throw new globalThis.Error("The parameter 'page' cannot be null.");
-        else if (page !== undefined)
-            url_ += "page=" + encodeURIComponent("" + page) + "&";
-        if (pageSize === null)
-            throw new globalThis.Error("The parameter 'pageSize' cannot be null.");
-        else if (pageSize !== undefined)
-            url_ += "pageSize=" + encodeURIComponent("" + pageSize) + "&";
+    getLive(): Observable<ApiResponseOfLiveCommitsDto> {
+        let url_ = this.baseUrl + "/api/GitHub/live";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {

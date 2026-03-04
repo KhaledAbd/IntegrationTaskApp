@@ -13,11 +13,8 @@ import {
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { KENDO_DATEINPUTS } from '@progress/kendo-angular-dateinputs';
-import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
-import { DateRangeFilterCellComponent } from '../date-range-filter-cell/date-range-filter-cell.component';
 import { IconsModule } from '@progress/kendo-angular-icons';
 import { LucideAngularModule, RefreshCw, Zap, Filter } from 'lucide-angular';
-import { CompositeFilterDescriptor, FilterDescriptor } from '@progress/kendo-data-query';
 import { 
   SVGIcon, 
   searchIcon, 
@@ -37,7 +34,6 @@ import {
     ButtonsModule,
     InputsModule,
     KENDO_DATEINPUTS,
-    DateRangeFilterCellComponent,
     IconsModule,
     LucideAngularModule
   ],
@@ -58,10 +54,9 @@ export class LiveTableComponent implements OnInit, OnDestroy {
   public pdfSVG: SVGIcon = filePdfIcon;
   public refreshSVG: SVGIcon = refreshIcon;
 
-  public filterState: CompositeFilterDescriptor = { logic: 'and', filters: [] };
-
   skip = 0;
   pageSize = 10;
+  allCommits: any[] = [];
   gridView: GridDataResult = { data: [], total: 0 };
   loading = false;
 
@@ -76,45 +71,11 @@ export class LiveTableComponent implements OnInit, OnDestroy {
 
   fetchLiveCommits(): void {
     this.loading = true;
-    const page = Math.floor(this.skip / this.pageSize) + 1;
-    
-    // Extract filter values from Grid Filter State
-    let searchTexts: string[] = [];
-    let start: Date | null = null;
-    let end: Date | null = null;
-
-    if (this.filterState && this.filterState.filters) {
-      this.filterState.filters.forEach(filter => {
-        if ('logic' in filter) {
-            // It's a CompositeFilterDescriptor (e.g. from our Date Range filter cell)
-            filter.filters.forEach(f => {
-               if ('operator' in f && 'value' in f) {
-                 if (f.operator === 'gte') start = f.value;
-                 if (f.operator === 'lte') end = f.value;
-               }
-            });
-        } else if ('field' in filter && 'value' in filter && filter.value) {
-            // It's a single FilterDescriptor (e.g. from Author, Message, SHA inputs)
-            searchTexts.push(filter.value);
-        }
-      });
-    }
-
-    const searchText = searchTexts.length > 0 ? searchTexts.join(' ') : null;
-    
-    this.githubClient.getLive(
-        searchText, 
-        start, 
-        end, 
-        page, 
-        this.pageSize
-    ).subscribe({
+    this.githubClient.getLive().subscribe({
       next: (response) => {
         if (response.success && response.data) {
-          this.gridView = {
-            data: response.data.items ?? [],
-            total: response.data.totalCount ?? 0
-          };
+          this.allCommits = response.data.items ?? [];
+          this.updateGridView();
         }
         this.loading = false;
       },
@@ -125,10 +86,17 @@ export class LiveTableComponent implements OnInit, OnDestroy {
     });
   }
 
+  updateGridView(): void {
+    this.gridView = {
+      data: this.allCommits.slice(this.skip, this.skip + this.pageSize),
+      total: this.allCommits.length
+    };
+  }
+
   onPageChange(e: PageChangeEvent): void {
     this.skip = e.skip;
     this.pageSize = e.take;
-    this.fetchLiveCommits();
+    this.updateGridView();
   }
 
   refresh(): void {
@@ -137,10 +105,5 @@ export class LiveTableComponent implements OnInit, OnDestroy {
       this.dataBinding.skip = 0;
     }
     this.fetchLiveCommits();
-  }
-
-  onFilterChange(filter: CompositeFilterDescriptor): void {
-    this.filterState = filter;
-    this.refresh();
   }
 }

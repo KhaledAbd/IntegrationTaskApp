@@ -13,9 +13,6 @@
     scrollable="none"
     class="premium-grid"
     [navigable]="true"
-    filterable="row"
-    [filter]="filterState"
-    (filterChange)="onFilterChange($event)"
     [pageable]="true"
     [pageSize]="pageSize"
     [skip]="skip"
@@ -46,16 +43,7 @@
       </ng-template>
     </kendo-grid-column>
 
-    <kendo-grid-column field="authorName" title="Name / Email" [width]="200">
-      <ng-template kendoGridFilterCellTemplate let-filter let-column="column">
-        <kendo-grid-string-filter-cell
-          [column]="column"
-          [filter]="filter"
-          operator="contains"
-          [showOperators]="false"
-        >
-        </kendo-grid-string-filter-cell>
-      </ng-template>
+    <kendo-grid-column field="authorName" title="Author" [width]="200">
       <ng-template kendoGridCellTemplate let-dataItem>
         <div class="author-cell">
           <span class="author-name">{{ dataItem.authorName }}</span>
@@ -64,20 +52,20 @@
     </kendo-grid-column>
     
     <kendo-grid-column field="date" title="Date" [width]="200">
-      <ng-template kendoGridFilterCellTemplate let-filter>
-        <app-date-range-filter-cell
-          [filter]="filter"
-          field="date"
-        ></app-date-range-filter-cell>
-      </ng-template>
       <ng-template kendoGridCellTemplate let-dataItem>
         <span class="date-text">{{ dataItem.date | date: 'MMM d, y, h:mm a' }}</span>
       </ng-template>
     </kendo-grid-column>
     
-    <kendo-grid-column field="sha" title="SHA" [width]="120" [filterable]="false">
+    <kendo-grid-column field="sha" title="Commit SHA" [width]="120" [filterable]="false">
       <ng-template kendoGridCellTemplate let-dataItem>
         <code class="sha">{{ dataItem.sha?.substring(0, 7) }}</code>
+      </ng-template>
+    </kendo-grid-column>
+
+    <kendo-grid-column title="Source" [width]="100" [filterable]="false">
+      <ng-template kendoGridCellTemplate>
+        <span class="badge badge-live">Live</span>
       </ng-template>
     </kendo-grid-column>
 

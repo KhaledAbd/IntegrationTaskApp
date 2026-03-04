@@ -1,0 +1,174 @@
+/* Global Design System */
+:root {
+  /* Colors */
+  --primary: #6366f1;
+  --primary-hover: #4f46e5;
+  --secondary: #0ea5e9;
+  --accent: #f59e0b;
+  --success: #10b981;
+  --error: #ef4444;
+  --background: #0f172a;
+  --surface: rgba(30, 41, 59, 0.7);
+  --surface-hover: rgba(30, 41, 59, 0.9);
+  --text: #f8fafc;
+  --text-muted: #94a3b8;
+  --border: rgba(255, 255, 255, 0.1);
+  --glass-bg: rgba(255, 255, 255, 0.03);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  
+  /* Gradents */
+  --grad-primary: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+  --grad-surface: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 100%);
+
+  /* Effects */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --radius: 1rem;
+  --blur: 12px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--background);
+  color: var(--text);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: var(--primary-hover);
+}
+
+/* Kendo UI Premium Overrides */
+.k-grid {
+  background-color: var(--surface) !important;
+  border-radius: var(--radius) !important;
+  border: 1px solid var(--glass-border) !important;
+  backdrop-filter: blur(var(--blur)) !important;
+  color: var(--text) !important;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+.k-grid-header {
+  background: var(--grad-surface) !important;
+  border-bottom: 1px solid var(--glass-border) !important;
+}
+
+.k-grid-header .k-header {
+  background: transparent !important;
+  color: var(--text) !important;
+  font-weight: 600 !important;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  padding: 1rem !important;
+  border-color: var(--glass-border) !important;
+}
+
+.k-grid td {
+  padding: 1rem !important;
+  border-color: var(--glass-border) !important;
+  color: var(--text-muted) !important;
+}
+
+.k-grid tr.k-alt {
+  background-color: rgba(255, 255, 255, 0.02) !important;
+}
+
+.k-grid tr:hover {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.k-grid-pager {
+  background: transparent !important;
+  border-top: 1px solid var(--glass-border) !important;
+  color: var(--text) !important;
+  padding: 0.75rem !important;
+}
+
+.k-pager-numbers .k-link.k-selected {
+  background: var(--grad-primary) !important;
+  border: none !important;
+  border-radius: 0.5rem !important;
+  color: white !important;
+}
+
+.k-pager-nav.k-link {
+  color: var(--text-muted) !important;
+}
+
+.k-pager-nav.k-link:hover {
+  color: var(--text) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-radius: 0.5rem;
+}
+
+/* Premium Buttons */
+.k-button-solid-primary {
+  background: var(--grad-primary) !important;
+  border: none !important;
+  border-radius: 0.75rem !important;
+  padding: 0.6rem 1.25rem !important;
+  font-weight: 600 !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3) !important;
+}
+
+.k-button-solid-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.5) !important;
+  filter: brightness(1.1);
+}
+
+.k-button-solid-base {
+  background: var(--surface) !important;
+  border: 1px solid var(--glass-border) !important;
+  color: var(--text) !important;
+  border-radius: 0.75rem !important;
+  backdrop-filter: blur(var(--blur));
+}
+
+.k-button-solid-base:hover {
+  background: var(--surface-hover) !important;
+  border-color: var(--primary) !important;
+}
+
+/* Kendo Inputs */
+.k-textbox, .k-input-inner {
+  background: transparent !important;
+  color: var(--text) !important;
+}
+
+.k-input-md {
+  background: var(--glass-bg) !important;
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 0.75rem !important;
+  transition: all 0.2s;
+}
+
+.k-input-md:focus-within {
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2) !important;
+}

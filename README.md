@@ -42,9 +42,14 @@ Authentication with the GitHub API is handled using a **Personal Access Token (P
 - [Node.js](https://nodejs.org/) & Angular CLI (for local UI development).
 - Visual Studio 2022 (optional, but recommended as the solution uses `.sln` and `.dcproj`).
 
-## How to Run the Application
+## Running the Application
 
-### Method 1: Using Docker Compose (Recommended)
+For detailed setup, custom configurations (adding your own repo), and troubleshooting, please refer to the:
+👉 **[Detailed Running Guide](./RUNNING_GUIDE.md)**
+
+---
+
+### Quick Start: Docker Compose
 
 The easiest way to get the entire stack running is via Docker Compose. This ensures all services, dependencies, and network configurations are set up automatically.
 
